@@ -5,6 +5,8 @@ var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
+//to tell heroku to start the app add the script "start" in the package.json file
+// to have the version of node on the heroku as the one you have on machine add script "engines" 
 var app=express();
 
 app.use(bodyParser.json());
@@ -50,10 +52,12 @@ app.get('/todos/:id',(req,res)=> {
 		return res.status(400).send();
 	})
 
-})
+});
 
-app.listen(3000,()=>{
-	console.log('Server has been started');
+var PORT = process.env.env||3000;
+
+app.listen(PORT,()=>{
+	console.log(`Started up at port ${PORT}`);
 })
 
 module.exports={
