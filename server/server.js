@@ -9,6 +9,16 @@ var app=express();
 
 app.use(bodyParser.json());
 
+app.get('/todos',(req,res)=>{
+	Todo.find().then((todos)=>{
+		res.send({
+			todos//do it like this,easier to extend later
+		})
+	},(e)=>{
+		res.status(400).send(e);
+	})
+})
+
 app.post('/todos',(req,res)=>{
 	// console.log(req.body);	//go to postman and make a request to localhost:3000/todos and in body raw json send {"texgt":'someting'}
 
