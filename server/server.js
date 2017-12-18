@@ -28,33 +28,9 @@ app.listen(3000,()=>{
 	console.log('Server has been started');
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports={
+	app
+};
 
 // var user = new User({
 // 	email:'   gak@gmai.com   '
