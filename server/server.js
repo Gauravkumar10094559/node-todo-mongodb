@@ -1,3 +1,16 @@
+// var env=process.env.NODE_ENV || 'development';
+// console.log('env========',env);
+// //setting up the db for diff env
+
+// if(env==='development') {
+// 	process.env.PORT=3000;
+// 	process.env.MONGODB_URI='mongodb://localhost:27017/ToDoAppProd';
+// } else 	{
+// 	process.env.PORT=3000;
+// 	process.env.MONGODB_URI='mongodb://localhost:27017/ToDoAppProdTest';
+// }
+
+require('./config/config');
 const _=require('lodash');
 const express = require('express');
 const bodyParser= require('body-parser');
@@ -5,6 +18,10 @@ const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+
+//process.env.NODE_ENV === 'production','development','test'
+
+// "test":"export NODE_ENV=test || SET \"NODE_ENV=test\"     "
 
 //to tell heroku to start the app add the script "start" in the package.json file
 // to have the version of node on the heroku as the one you have on machine add script "engines" 
@@ -111,7 +128,7 @@ app.patch('/todos/:id',(req,res)=> {
 });
 
 
-var PORT = process.env.PORT||3000;
+var PORT = process.env.PORT;
 
 app.listen(PORT,()=>{
 	console.log(`Started up at port ${PORT}`);
