@@ -10,7 +10,7 @@
 // 	process.env.MONGODB_URI='mongodb://localhost:27017/ToDoAppProdTest';
 // }
 
-require('./config/config');
+require('./../config/config');
 const _=require('lodash');
 const express = require('express');
 const bodyParser= require('body-parser');
