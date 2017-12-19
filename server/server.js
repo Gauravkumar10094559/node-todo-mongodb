@@ -128,7 +128,7 @@ app.patch('/todos/:id',(req,res)=> {
 });
 
 
-var PORT = process.env.PORT||3000;
+var PORT = process.env.PORT;
 
 app.listen(PORT,()=>{
 	console.log(`Started up at port ${PORT}`);
