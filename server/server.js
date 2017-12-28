@@ -18,6 +18,7 @@ const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 //process.env.NODE_ENV === 'production','development','test'
 
@@ -157,6 +158,30 @@ app.post('/users',(req,res) => {
 	})
 
 });
+
+
+//MIDDLEWARE
+
+
+
+//PRIVATE ROUTE
+
+app.get('/users/me',authenticate,(req,res) => {
+	res.send(req.user);
+
+
+	// var token=req.header('x-auth');
+
+	// //model method
+	// User.findByToken(token).then((user)=> {
+	// 	if(!user) {
+	// 		return Promise.reject();
+	// 	}
+	// 	res.send(user);
+	// }).catch((e) => {
+	// 	res.status(401).send();
+	// });
+})
 
 
 
