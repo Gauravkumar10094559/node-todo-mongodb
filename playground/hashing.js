@@ -1,19 +1,34 @@
 const {SHA256}= require('crypto-js');
 const jwt= require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-var data={
-	id:10
-};
+var password= '123abc!';
 
-// jwt.sign//to sign in the data and generate hast values
-// jwt.verify//to verify hashes
+bcrypt.genSalt(10,(err,salt) => {
+	bcrypt.hash(password,salt,(err,hash)=>{
+		console.log(hash);
+	});
+});
 
-//head over to jwt.io to check the authencity and parts of the token
-var token= jwt.sign(data,'thisisthesecrethere');//token is what will be sent to the user for sign in and log in and stored in the db
-console.log(token);
+var hashedpass='$2a$10$sO5NHgKxzvqp1H2FdDWiIur9yVPFSqdgnFcWLdvCcWgWbHAvlI5ii';
 
-var decoded=jwt.verify(token,'thisisthesecrethere');//if token or the secret is tempered with then the signature will be invalid
-console.log('decoded',decoded);
+bcrypt.compare(password,hashedpass,(err,res) => {
+	console.log(res);
+});
+
+// var data={
+// 	id:10
+// };
+
+// // jwt.sign//to sign in the data and generate hast values
+// // jwt.verify//to verify hashes
+
+// //head over to jwt.io to check the authencity and parts of the token
+// var token= jwt.sign(data,'thisisthesecrethere');//token is what will be sent to the user for sign in and log in and stored in the db
+// console.log(token);
+
+// var decoded=jwt.verify(token,'thisisthesecrethere');//if token or the secret is tempered with then the signature will be invalid
+// console.log('decoded',decoded);
 
 
 
