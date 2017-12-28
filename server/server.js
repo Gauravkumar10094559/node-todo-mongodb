@@ -85,7 +85,7 @@ app.delete('/todos/:id',(req,res) => {
 		}
 			res.status(200).send({todo});
 	}).catch((e) => {
-		res.status(400).send();
+		res.status(400).send(e);
 	});
 });
 
@@ -126,6 +126,38 @@ app.patch('/todos/:id',(req,res)=> {
 	});
 
 });
+
+app.post('/users',(req,res) => {
+
+	var body=_.pick(req.body,['email'],['password']);
+	// var user = new User({
+	// 	email:body.email,
+	// 	password:body.password
+	// });
+
+	var user = new User(body);
+
+	user.save().then(()=> {
+		// console.log(user);
+		//now when the user signs up you need to 
+		//give them the token
+		//User can have custom model methods
+		//ex. User.findByToken
+		//user can have instance methods(this one is
+		// on every document)
+		//ex. user.generateAuthToken
+		// console.log('user-0',user);
+		return user.generateAuthToken();
+		// res.send({user});
+	}).then((token)=> {
+
+		res.header('x-auth',token).send(user);
+	}).catch((e)=>{
+		res.status(400).send(e);
+	})
+
+});
+
 
 
 var PORT = process.env.PORT;
