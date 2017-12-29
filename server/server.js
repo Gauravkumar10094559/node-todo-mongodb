@@ -237,7 +237,7 @@ app.delete('/users/me/token',authenticate,(req,res)=> {
 
 const port = process.env.PORT;
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Started up at port ${port}`);
 });
 
