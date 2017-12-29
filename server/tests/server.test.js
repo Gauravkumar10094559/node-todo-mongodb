@@ -2,28 +2,33 @@ const request= require('supertest');
 const {ObjectID} = require('mongodb');
 const {app}=require('./../server');
 const {Todo}=require('./../models/todo');
+const {User}=require('./../models/user');
+const {todos,populateTodos,users,populateUsers}=require('./seed/seed');
 
-var todos=[
-	{
-		_id:new ObjectID(),
-		text:'First test todo'
-	},
-	{
-		_id:new ObjectID(),
-		text:'Second test todo',
-		completed:true,
-		completedAt:22
-	}
-];
+// var todos=[
+// 	{
+// 		_id:new ObjectID(),
+// 		text:'First test todo'
+// 	},
+// 	{
+// 		_id:new ObjectID(),
+// 		text:'Second test todo',
+// 		completed:true,
+// 		completedAt:22
+// 	}
+// ];
 
-beforeEach((done)=>{	//to have the same db every time we test
-	// Todo.remove({}).then(()=>done());//for just post routes
-	Todo.remove({})
-					.then(()=>{	//first remove all
-						return Todo.insertMany(todos);	//then add dummy data
-					})
-					.then(()=> done());	//and then finish with done()
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
+
+// beforeEach((done)=>{	//to have the same db every time we test
+// 	// Todo.remove({}).then(()=>done());//for just post routes
+// 	Todo.remove({})
+// 					.then(()=>{	//first remove all
+// 						return Todo.insertMany(todos);	//then add dummy data
+// 					})
+// 					.then(()=> done());	//and then finish with done()
+// });
 
 describe('POST /todos',() => {
 	it('should create a new todo',(done) => {	//saving to db is async so done
@@ -191,4 +196,80 @@ describe('PATCH /todos/:id',()=>{
 			})
 			.end(done);
 	});
+});
+
+
+describe('GET /users/me',()=> {
+		
+	it('should return user if authenticated',(done)=>{
+		request(app)
+			.get('/users/me')
+			.set('x-auth',users[0].tokens[0].token)
+			.expect(200)
+			.expect((res)=> {
+				expect(res.body._id).toBe(users[0]._id.toHexString());
+				expect(res.body.email).toBe(users[0].email);
+			})
+			.end(done);
+	});
+
+	it('should return 401 if not authenticated and an empty body',(done) => {
+
+		request(app)
+			.get('/users/me')
+			.expect(401)
+			.expect((res)=>{
+				expect(res.body).toEqual({});
+			})
+			.end(done);
+
+	});
+
+});
+
+describe('POST /users',()=>{
+	it('should create a user',(done)=>{
+		var email='abc@g.com';
+		var password='password';
+		request(app)
+			.post('/users')
+			.send({email,password})
+			.expect(200)
+			.expect((res)=>{
+				expect(res.headers['x-auth']).toBeDefined();
+				expect(res.body._id).toBeDefined();
+				expect(res.body.email).toBeDefined();
+			})
+			.end((err)=> {
+				if(err) {
+					return done(err);
+				}
+				User.findOne({email}).then((user)=>{
+					expect(user).toBeDefined();
+					expect(user.password).not.toBe(password);
+					done();
+				});
+			});
+	});
+
+	it('should return validation errors if request is invalid',(done)=> {
+		var email='fail@g.com';
+		var password='fail';
+		request(app)
+			.post('/users')
+			.send({email,password})
+			.expect(400)
+			.end(done);
+	});
+
+	it('shouldnot create a user if an email is invalid',(done)=> {
+		var email=users[0].email;
+		var password='passwordone';
+		request(app)
+			.post('/users')
+			.send({email,password})
+			.expect(400)
+			.end(done);
+	});
+
 });

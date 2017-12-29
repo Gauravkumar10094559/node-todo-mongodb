@@ -103,9 +103,9 @@ UserSchema.pre('save', function (next) {	//next must be passed and must be calle
 	if(user.isModified('password')){
 		bcrypt.genSalt(10,(err,salt)=> {
 			bcrypt.hash(user.password,salt,(err,hash)=>{
-				console.log('before',user.password);
+				// console.log('before',user.password);
 				user.password=hash;
-				console.log('after',user.password);
+				// console.log('after',user.password);
 				next();
 			})
 		})
