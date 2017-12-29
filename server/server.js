@@ -235,11 +235,11 @@ app.delete('/users/me/token',authenticate,(req,res)=> {
 
 
 
-var PORT = process.env.PORT;
+const port = process.env.PORT;
 
-app.listen(PORT,()=>{
-	console.log(`Started up at port ${PORT}`);
-})
+app.listen(port, () => {
+  console.log(`Started up at port ${port}`);
+});
 
 module.exports={
 	app
