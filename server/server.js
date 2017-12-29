@@ -19,6 +19,7 @@ const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
+const bcrypt = require('bcryptjs');
 
 //process.env.NODE_ENV === 'production','development','test'
 
@@ -181,7 +182,34 @@ app.get('/users/me',authenticate,(req,res) => {
 	// }).catch((e) => {
 	// 	res.status(401).send();
 	// });
-})
+});
+
+//POST /users/login
+
+app.post('/users/login',(req,res)=> {
+
+	var body=_.pick(req.body,['email'],['password']);
+
+	User.findByCredentials(body.email,body.password).then((user)=>{
+		return user.generateAuthToken().then((token)=>{
+			res.header('x-auth',token).send(user);
+		})
+	}).catch((e)=> {
+		res.status(400).send('err');
+	});
+
+	// User.findOne({email:body.email}).then((user)=> {
+	// 	bcrypt.compare(body.password,user.password,(err,result)=> {
+	// 		if(err) {
+	// 			return res.status(404).send();
+	// 		}
+	// 		return res.status(200).send(user);
+	// 	})
+	// },(e)=> {
+	// 	return res.status(404).send();
+	// });
+
+});
 
 
 
