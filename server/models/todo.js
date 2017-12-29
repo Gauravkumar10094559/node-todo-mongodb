@@ -13,6 +13,10 @@ var Todo= mongoose.model('Todo',{	//'Todo' will be automatically lowercased and 
 	completedAt:{
 		type:Number,
 		default:null
+	},
+	_creator:{
+		type:mongoose.Schema.Types.ObjectId,
+		required:true
 	}
 });
 
